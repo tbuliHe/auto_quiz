@@ -7,67 +7,67 @@ export const json = {
         {
           "type": "radiogroup",
           "name": "question1",
-          "title": "序列 {0，1，8，27，…，3n…} 的母函数是什么？",
+          "title": "以下哪一项是代数运算的基本概念？",
           "isRequired": true,
           "choices": [
-            "6x^2 - 20x + 16 / (1-x)^4",
-            "6x^2 + 20x - 16 / (1-x)^4",
-            "6x^2 - 20x + 16 / (1+x)^4",
-            "6x^2 + 20x - 16 / (1+x)^4"
+            "引言",
+            "微积分",
+            "统计学",
+            "几何学"
           ],
-          "correctAnswer": "6x^2 - 20x + 16 / (1-x)^4"
+          "correctAnswer": "引言"
         },
         {
           "type": "radiogroup",
           "name": "question2",
-          "title": "已知序列 {C(n+3, 3), n=0,1,2...}，其母函数为？",
+          "title": "半群是指满足哪种性质的代数结构？",
           "isRequired": true,
           "choices": [
-            "1 / (1+x)^4",
-            "1 / (1-x)^4",
-            "1 / (1+x)^3",
-            "1 / (1-x)^3"
+            "交换律",
+            "结合律",
+            "分配律",
+            "逆元存在"
           ],
-          "correctAnswer": "1 / (1-x)^4"
+          "correctAnswer": "结合律"
         },
         {
           "type": "radiogroup",
           "name": "question3",
-          "title": "已知母函数 G(x) = (783 - 54x + 25x^2) / (1-9x)(1+6x), 求序列 {a_n} 的通项公式。",
+          "title": "幺半群是在半群的基础上增加了什么性质？",
           "isRequired": true,
           "choices": [
-            "a_n = 7 * 9^n + 4 * (-6)^n",
-            "a_n = 7 * 9^n - 4 * (-6)^n",
-            "a_n = 7 * (-9)^n + 4 * 6^n",
-            "a_n = 7 * (-9)^n - 4 * 6^n"
+            "存在单位元",
+            "存在逆元",
+            "满足交换律",
+            "满足分配律"
           ],
-          "correctAnswer": "a_n = 7 * 9^n - 4 * (-6)^n"
+          "correctAnswer": "存在单位元"
         },
         {
           "type": "radiogroup",
           "name": "question4",
-          "title": "已知母函数 G(x) = (9 - 3x - x^2) / (1-5x-6x^2)，求对应的序列 {a_n} 的通项公式。",
+          "title": "以下哪个是典型群的例子？",
           "isRequired": true,
           "choices": [
-            "a_n = 2 * 7^n - 8^n",
-            "a_n = 2 * 7^n + 8^n",
-            "a_n = 2 * (-7)^n - 8^n",
-            "a_n = 2 * (-7)^n + 8^n"
+            "有理数群",
+            "循环群",
+            "实数群",
+            "复数群"
           ],
-          "correctAnswer": "a_n = 2 * 7^n + 8^n"
+          "correctAnswer": "循环群"
         },
         {
           "type": "radiogroup",
           "name": "question5",
-          "title": "如果G_n满足 0 = G_(n+2) - 3G_(n+1) - G_n，G_0 = 0, G_1 = 2，那么序列 {G_n} 的母函数是？",
+          "title": "群论在密码学上的一个主要应用是什么？",
           "isRequired": true,
           "choices": [
-            "(3x-1) / (3 - 5√5/10 - x)(3 + 5√5/10 -x)",
-            "(3x-1) / (3 + 5√5/10 - x)(3 + 5√5/10 -x)",
-            "(3x+1) / (3 - 5√5/10 - x)(3 + 5√5/10 -x)",
-            "(2x) / ((2 - (3+√5)/2 x) (2- (3-√5)/2 x))"
+            "数据压缩",
+            "图像处理",
+            "加密算法",
+            "语音识别"
           ],
-          "correctAnswer": "(2x) / ((2 - (3+√5)/2 x) (2- (3-√5)/2 x))"
+          "correctAnswer": "加密算法"
         }
       ]
     }
