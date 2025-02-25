@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import React from 'react';
+import { BrowserRouter, Switch, Route, Link } from 'react-router-dom';
 import "./App.css";
 import { HomePage } from "./pages/Home";
 import { CreatorPage } from "./pages/Creator";
@@ -6,15 +7,15 @@ import { SurveyPage } from "./pages/Survey";
 import { ExportToPDFPage } from "./pages/Export";
 import { AnalyticsPage } from "./pages/Analytics";
 import { AnalyticsTabulatorPage } from "./pages/AnalyticsTabulator";
-import { AnalyticsDatatablesPage } from "./pages/AnalyticsDatatables";
+import SurveyAnalyticsDatatables from './components/SurveyAnalyticsDatatables';
 
 import "bootstrap/dist/css/bootstrap.css";
 
 export { MyQuestion } from "./components/MyQuestion";
 
-export default function SurveyJSReactApplication() {
+function App() {
   return (
-    <Router>
+    <BrowserRouter>
       <div>
         <nav className="navbar navbar-default">
           <div className="container-fluid">
@@ -53,30 +54,18 @@ export default function SurveyJSReactApplication() {
 
         <div className="app-content">
           <Switch>
-            <Route exact path="/">
-              <HomePage />
-            </Route>
-            <Route path="/survey">
-              <SurveyPage />
-            </Route>
-            <Route path="/creator">
-              <CreatorPage />
-            </Route>
-            <Route path="/export">
-              <ExportToPDFPage />
-            </Route>
-            <Route path="/analytics">
-              <AnalyticsPage />
-            </Route>
-            <Route path="/analyticsdatatables">
-              <AnalyticsDatatablesPage />
-            </Route>
-            <Route path="/analyticstabulator">
-              <AnalyticsTabulatorPage />
-            </Route>
+            <Route path="/survey" component={SurveyPage} />
+            <Route path="/creator" component={CreatorPage} />
+            <Route path="/export" component={ExportToPDFPage} />
+            <Route path="/analytics" component={AnalyticsPage} />
+            <Route path="/analyticsdatatables" component={SurveyAnalyticsDatatables} />
+            <Route path="/analyticstabulator" component={AnalyticsTabulatorPage} />
+            <Route path="/" component={HomePage} />
           </Switch>
         </div>
       </div>
-    </Router>
+    </BrowserRouter>
   );
 }
+
+export default App;

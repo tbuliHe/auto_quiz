@@ -7,67 +7,67 @@ export const json = {
         {
           "type": "radiogroup",
           "name": "question1",
-          "title": "在 EXT2 文件系统中，如果磁盘块大小为 1KB，指针大小为 4B，一个间接块指针最多能指向多少个数据块？",
+          "title": "以下哪一项是计算机视觉的常见应用？",
           "isRequired": true,
           "choices": [
-            "128",
-            "256",
-            "512",
-            "1024"
+            "图像分类",
+            "网页设计",
+            "数据库管理",
+            "编写操作系统"
           ],
-          "correctAnswer": "256"
+          "correctAnswer": "图像分类"
         },
         {
           "type": "radiogroup",
           "name": "question2",
-          "title": "下列哪个命令用于修改文件的所有者?",
+          "title": "在图像处理中，哪个操作用于改变图像的亮度或对比度？",
           "isRequired": true,
           "choices": [
-            "chmod",
-            "chown",
-            "chgrp",
-            "ls -l"
+            "线性滤波",
+            "点操作",
+            "傅里叶变换",
+            "边缘检测"
           ],
-          "correctAnswer": "chown"
+          "correctAnswer": "点操作"
         },
         {
           "type": "radiogroup",
           "name": "question3",
-          "title": "关于Linux的虚拟内存管理，以下说法正确的是?",
+          "title": "以下哪个概念与从多个图像中恢复3D结构有关？",
           "isRequired": true,
           "choices": [
-            "每个进程都有相同的物理地址空间。",
-            "每个进程都有独立的虚拟地址空间，但共享相同的页表。",
-            "每个进程都有独立的虚拟地址空间和独立的页表。",
-            "虚拟内存的大小受限于物理内存的大小。"
+            "图像增强",
+            "运动结构恢复 (Structure from Motion)",
+            "图像压缩",
+            "图像锐化"
           ],
-          "correctAnswer": "每个进程都有独立的虚拟地址空间和独立的页表。"
+          "correctAnswer": "运动结构恢复 (Structure from Motion)"
         },
         {
           "type": "radiogroup",
           "name": "question4",
-          "title": "以下哪个进程间通信 (IPC) 机制的效率通常最高？",
+          "title": "以下哪一项技术用于在图像中定位特定对象？",
           "isRequired": true,
           "choices": [
-            "消息队列",
-            "管道",
-            "共享内存",
-            "Socket"
+            "图像分割",
+            "对象检测",
+            "图像拼接",
+            "图像校正"
           ],
-          "correctAnswer": "共享内存"
+          "correctAnswer": "对象检测"
         },
         {
           "type": "radiogroup",
           "name": "question5",
-          "title": "在 Shell 脚本中，`$?` 特殊变量代表什么含义？",
+          "title": "图像对齐和拼接通常用于创建什么？",
           "isRequired": true,
           "choices": [
-            "脚本的进程 ID",
-            "上一个命令的退出状态码",
-            "脚本接收到的参数个数",
-            "当前 Shell 的版本号"
+            "单张低分辨率图像",
+            "全景图像",
+            "黑白图像",
+            "模糊图像"
           ],
-          "correctAnswer": "上一个命令的退出状态码"
+          "correctAnswer": "全景图像"
         }
       ]
     }

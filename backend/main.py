@@ -149,7 +149,7 @@ def generate_quiz(content, question_count, difficulty):
         raise ValueError(f"生成测验失败: {str(e)}")
 
 def update_survey_json(quiz_json):
-    survey_json_path = "../surveyjs_react_quickstart/src/data/survey_json.js"
+    survey_json_path = "../frontend/src/data/survey_json.js"
     with open(survey_json_path, 'w', encoding='utf-8') as f:
         f.write(f"export const json = {json.dumps(quiz_json, indent=2, ensure_ascii=False)};")
 
@@ -207,6 +207,98 @@ def handle_quiz_generation():
     except Exception as e:
         print(f"Unexpected error: {str(e)}")
         return jsonify({"error": f"服务器错误: {str(e)}"}), 500
+
+@app.route('/analyze-quiz', methods=['POST'])
+def analyze_quiz():
+    try:
+        # 获取用户答案
+        data = request.json
+        if not data or 'answers' not in data:
+            return jsonify({"error": "没有提供答案"}), 400
+            
+        user_answers = data['answers']
+        
+        # 加载测验题目
+        try:
+            # 读取survey_json.js内容
+            with open("../frontend/src/data/survey_json.js", 'r', encoding='utf-8') as f:
+                content = f.read()
+                
+            # 提取JSON部分
+            import re
+            json_match = re.search(r'export const json = (.+?);', content, re.DOTALL)
+            if not json_match:
+                return jsonify({"error": "解析测验题目失败"}), 500
+                
+            quiz_json = json.loads(json_match.group(1))
+        except Exception as e:
+            return jsonify({"error": f"加载测验题目失败: {str(e)}"}), 500
+        
+        # 比较答案，找出错误的题目
+        incorrect_questions = []
+        correct_count = 0
+        total_questions = 0
+        
+        # 假设测验结构有pages和elements
+        for page in quiz_json.get('pages', []):
+            for question in page.get('elements', []):
+                question_id = question.get('name')
+                if question_id and question_id in user_answers:
+                    total_questions += 1
+                    user_answer = user_answers[question_id]
+                    correct_answer = question.get('correctAnswer')
+                    
+                    if user_answer != correct_answer:
+                        incorrect_questions.append({
+                            'question': question.get('title'),
+                            'userAnswer': user_answer,
+                            'correctAnswer': correct_answer,
+                            'options': question.get('choices')
+                        })
+                    else:
+                        correct_count += 1
+        
+        # 使用Gemini API分析知识点不足
+        knowledge_analysis = ""
+        if incorrect_questions:
+            analysis_prompt = f"""
+            基于以下测验结果，分析用户的知识点掌握情况并提供改进建议。
+
+            总题数: {total_questions}
+            正确答案: {correct_count}
+            错误答案: {len(incorrect_questions)}
+            
+            以下是用户回答错误的题目:
+            {json.dumps(incorrect_questions, ensure_ascii=False, indent=2)}
+            
+            请提供:
+            1. 用户知识点不足的区域总结
+            2. 具体的改进建议
+            3. 错误答案中发现的任何模式
+            
+            请使用markdown格式输出你的分析。
+            """
+            
+            try:
+                analysis_response = model.generate_content(analysis_prompt)
+                knowledge_analysis = analysis_response.text
+            except Exception as e:
+                knowledge_analysis = f"生成分析失败: {str(e)}"
+        else:
+            knowledge_analysis = "恭喜！您回答了所有问题正确。"
+        
+        # 返回结果
+        return jsonify({
+            "totalQuestions": total_questions,
+            "correctCount": correct_count,
+            "incorrectCount": len(incorrect_questions),
+            "incorrectQuestions": incorrect_questions,
+            "knowledgeAnalysis": knowledge_analysis
+        }), 200
+        
+    except Exception as e:
+        print(f"测验分析错误: {str(e)}")
+        return jsonify({"error": f"测验分析失败: {str(e)}"}), 500
 
 if __name__ == "__main__":
     app.run(debug=True)
