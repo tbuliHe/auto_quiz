@@ -7,67 +7,67 @@ export const json = {
         {
           "type": "radiogroup",
           "name": "question1",
-          "title": "以下哪一项是计算机视觉的常见应用？",
+          "title": "序列 {0，1，8，27，…，3n…} 的母函数是什么？",
           "isRequired": true,
           "choices": [
-            "图像分类",
-            "网页设计",
-            "数据库管理",
-            "编写操作系统"
+            "6x^2 - 20x + 16 / (1-x)^4",
+            "6x^2 + 20x - 16 / (1-x)^4",
+            "6x^2 - 20x + 16 / (1+x)^4",
+            "6x^2 + 20x - 16 / (1+x)^4"
           ],
-          "correctAnswer": "图像分类"
+          "correctAnswer": "6x^2 - 20x + 16 / (1-x)^4"
         },
         {
           "type": "radiogroup",
           "name": "question2",
-          "title": "在图像处理中，哪个操作用于改变图像的亮度或对比度？",
+          "title": "已知序列 {C(n+3, 3), n=0,1,2...}，其母函数为？",
           "isRequired": true,
           "choices": [
-            "线性滤波",
-            "点操作",
-            "傅里叶变换",
-            "边缘检测"
+            "1 / (1+x)^4",
+            "1 / (1-x)^4",
+            "1 / (1+x)^3",
+            "1 / (1-x)^3"
           ],
-          "correctAnswer": "点操作"
+          "correctAnswer": "1 / (1-x)^4"
         },
         {
           "type": "radiogroup",
           "name": "question3",
-          "title": "以下哪个概念与从多个图像中恢复3D结构有关？",
+          "title": "已知母函数 G(x) = (783 - 54x + 25x^2) / (1-9x)(1+6x), 求序列 {a_n} 的通项公式。",
           "isRequired": true,
           "choices": [
-            "图像增强",
-            "运动结构恢复 (Structure from Motion)",
-            "图像压缩",
-            "图像锐化"
+            "a_n = 7 * 9^n + 4 * (-6)^n",
+            "a_n = 7 * 9^n - 4 * (-6)^n",
+            "a_n = 7 * (-9)^n + 4 * 6^n",
+            "a_n = 7 * (-9)^n - 4 * 6^n"
           ],
-          "correctAnswer": "运动结构恢复 (Structure from Motion)"
+          "correctAnswer": "a_n = 7 * 9^n - 4 * (-6)^n"
         },
         {
           "type": "radiogroup",
           "name": "question4",
-          "title": "以下哪一项技术用于在图像中定位特定对象？",
+          "title": "已知母函数 G(x) = (9 - 3x - x^2) / (1-5x-6x^2)，求对应的序列 {a_n} 的通项公式。",
           "isRequired": true,
           "choices": [
-            "图像分割",
-            "对象检测",
-            "图像拼接",
-            "图像校正"
+            "a_n = 2 * 7^n - 8^n",
+            "a_n = 2 * 7^n + 8^n",
+            "a_n = 2 * (-7)^n - 8^n",
+            "a_n = 2 * (-7)^n + 8^n"
           ],
-          "correctAnswer": "对象检测"
+          "correctAnswer": "a_n = 2 * 7^n + 8^n"
         },
         {
           "type": "radiogroup",
           "name": "question5",
-          "title": "图像对齐和拼接通常用于创建什么？",
+          "title": "如果G_n满足 0 = G_(n+2) - 3G_(n+1) - G_n，G_0 = 0, G_1 = 2，那么序列 {G_n} 的母函数是？",
           "isRequired": true,
           "choices": [
-            "单张低分辨率图像",
-            "全景图像",
-            "黑白图像",
-            "模糊图像"
+            "(3x-1) / (3 - 5√5/10 - x)(3 + 5√5/10 -x)",
+            "(3x-1) / (3 + 5√5/10 - x)(3 + 5√5/10 -x)",
+            "(3x+1) / (3 - 5√5/10 - x)(3 + 5√5/10 -x)",
+            "(2x) / ((2 - (3+√5)/2 x) (2- (3-√5)/2 x))"
           ],
-          "correctAnswer": "全景图像"
+          "correctAnswer": "(2x) / ((2 - (3+√5)/2 x) (2- (3-√5)/2 x))"
         }
       ]
     }

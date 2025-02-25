@@ -6,8 +6,6 @@ import { CreatorPage } from "./pages/Creator";
 import { SurveyPage } from "./pages/Survey";
 import { ExportToPDFPage } from "./pages/Export";
 import { AnalyticsPage } from "./pages/Analytics";
-import { AnalyticsTabulatorPage } from "./pages/AnalyticsTabulator";
-import SurveyAnalyticsDatatables from './components/SurveyAnalyticsDatatables';
 
 import "bootstrap/dist/css/bootstrap.css";
 
@@ -21,7 +19,7 @@ function App() {
           <div className="container-fluid">
             <div className="navbar-header">
               <a className="navbar-brand" href="/">
-                SurveyJS + React
+                Auto Quiz Generation
               </a>
             </div>
             <ul className="nav navbar-nav">
@@ -40,14 +38,6 @@ function App() {
               <li>
                 <Link to="/analytics">Analytics</Link>
               </li>
-              <li>
-                <Link to="/analyticstabulator">Results Table</Link>
-              </li>
-              <li>
-                <Link to="/analyticsdatatables">
-                  Results Table (IE Support)
-                </Link>
-              </li>
             </ul>
           </div>
         </nav>
@@ -58,8 +48,6 @@ function App() {
             <Route path="/creator" component={CreatorPage} />
             <Route path="/export" component={ExportToPDFPage} />
             <Route path="/analytics" component={AnalyticsPage} />
-            <Route path="/analyticsdatatables" component={SurveyAnalyticsDatatables} />
-            <Route path="/analyticstabulator" component={AnalyticsTabulatorPage} />
             <Route path="/" component={HomePage} />
           </Switch>
         </div>
