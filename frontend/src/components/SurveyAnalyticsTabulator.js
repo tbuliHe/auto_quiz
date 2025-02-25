@@ -5,7 +5,7 @@ import jsPDF from "jspdf";
 import * as XLSX from "xlsx";
 import "jspdf-autotable";
 
-import { Tabulator } from "survey-analytics/survey.analytics.tabulator.js";
+import { Tabulator } from "survey-analytics/survey.analytics.tabulator";
 import { Model } from "survey-core";
 import "survey-analytics/survey.analytics.tabulator.css";
 import "tabulator-tables/dist/css/tabulator.min.css";

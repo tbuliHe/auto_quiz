@@ -1,4 +1,4 @@
-import SurveyCreator from "../components/SurveyCreator";
+import SurveyCreator from "../components/SurveyCreator.js";
 
 import { json } from "../data/survey_json.js";
 

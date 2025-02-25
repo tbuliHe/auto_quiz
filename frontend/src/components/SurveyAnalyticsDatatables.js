@@ -1,15 +1,15 @@
 import { Component } from "react";
 import { data, json } from "../data/analytics_data";
-import { DataTables } from "survey-analytics/survey.analytics.datatables.js";
+import { DataTables } from "survey-analytics/survey.analytics.datatables";
 import { Model } from "survey-core";
 import $ from "jquery";
-import "datatables.net/js/jquery.dataTables.js";
-import "datatables.net-dt/js/dataTables.dataTables.js";
-import "datatables.net-buttons/js/dataTables.buttons.js";
-import "datatables.net-buttons/js/buttons.print.js";
-import "datatables.net-buttons/js/buttons.html5.js";
-import "datatables.net-colreorder/js/dataTables.colReorder.js";
-import "datatables.net-rowgroup/js/dataTables.rowGroup.js";
+import "datatables.net/js/jquery.dataTables";
+import "datatables.net-dt/js/dataTables.dataTables";
+import "datatables.net-buttons/js/dataTables.buttons";
+import "datatables.net-buttons/js/buttons.print";
+import "datatables.net-buttons/js/buttons.html5";
+import "datatables.net-colreorder/js/dataTables.colReorder";
+import "datatables.net-rowgroup/js/dataTables.rowGroup";
 import "datatables.net-colreorder-dt/css/colReorder.dataTables.css";
 import "survey-analytics/survey.analytics.datatables.css";
 
