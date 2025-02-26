@@ -1,7 +1,9 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, g
 from flask_cors import CORS
 import logging
 import os
+import time
+from functools import wraps
 
 import config
 from quiz_service import generate_quiz, update_survey_json
@@ -20,6 +22,28 @@ CORS(app)
 
 # 初始化配置
 config.init_configuration()
+
+def with_retry(max_retries=3, backoff_factor=0.5, errors=(Exception,)):
+    """创建一个带有重试功能的装饰器"""
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            retries = 0
+            while retries < max_retries:
+                try:
+                    return func(*args, **kwargs)
+                except errors as e:
+                    retries += 1
+                    if retries >= max_retries:
+                        app.logger.error(f"函数 {func.__name__} 执行失败，已达到最大重试次数: {e}")
+                        raise
+                    
+                    # 指数退避
+                    sleep_time = backoff_factor * (2 ** (retries - 1))
+                    app.logger.warning(f"函数 {func.__name__} 失败，{retries}/{max_retries}次尝试。等待{sleep_time:.2f}秒后重试: {e}")
+                    time.sleep(sleep_time)
+        return wrapper
+    return decorator
 
 @app.route('/generate-quiz', methods=['POST'])
 def handle_quiz_generation():
@@ -77,6 +101,7 @@ def handle_quiz_generation():
         return jsonify({"error": f"服务器错误: {str(e)}"}), 500
 
 @app.route('/analyze-quiz', methods=['POST'])
+@with_retry(max_retries=3, backoff_factor=0.5)
 def analyze_quiz():
     try:
         # 获取用户答案
