@@ -3,7 +3,7 @@ name: Deploy Auto Quiz
 on:
   push:
     branches:
-      - master  # 仅在推送到 main 分支时触发
+      - main  # 仅在推送到 main 分支时触发
 
 jobs:
   deploy:
