@@ -1,5 +1,5 @@
-backend/.env
 quiz/
 frontend/node_modules/
 start.sh
 frontend/src/data/
+backend/.env
