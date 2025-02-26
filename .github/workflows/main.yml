@@ -3,7 +3,7 @@ name: Deploy to Production
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   deploy:
@@ -26,7 +26,6 @@ jobs:
         run: |
           cd backend
           gunicorn --bind 0.0.0.0:5000 app:app &
-        background: true
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
