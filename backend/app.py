@@ -46,59 +46,39 @@ def with_retry(max_retries=3, backoff_factor=0.5, errors=(Exception,)):
     return decorator
 
 @app.route('/generate-quiz', methods=['POST'])
-def handle_quiz_generation():
+def create_quiz():
     try:
-        # 验证请求数据
+        # 获取上传的文件
         if 'file' not in request.files:
-            return jsonify({"error": "没有上传文件"}), 400
+            return jsonify({"error": "未上传文件"}), 400
         
         file = request.files['file']
         if file.filename == '':
             return jsonify({"error": "未选择文件"}), 400
-            
-        if not file.filename.endswith(('.pdf', '.txt')):
-            return jsonify({"error": "只支持 PDF 和 TXT 文件"}), 400
-
-        try:
-            question_count = int(request.form['questionCount'])
-            if not (5 <= question_count <= 20):
-                return jsonify({"error": "题目数量必须在5到20之间"}), 400
-        except (KeyError, ValueError):
-            return jsonify({"error": "无效的题目数量"}), 400
-            
-        if 'difficulty' not in request.form or request.form['difficulty'] not in ['easy', 'medium', 'hard']:
-            return jsonify({"error": "无效的难度等级"}), 400
-
-        # 读取文件内容
-        try:
-            if file.filename.endswith('.pdf'):
-                content = extract_text_from_pdf(file)
-            else:
-                content = file.read().decode('utf-8')
-                
-            if not content.strip():
-                return jsonify({"error": "文件内容为空"}), 400
-        except Exception as e:
-            return jsonify({"error": f"文件读取失败: {str(e)}"}), 400
-
-        # 生成测验
-        try:
-            quiz_json = generate_quiz(content, question_count, request.form['difficulty'])
-        except Exception as e:
-            logger.error(f"Quiz generation error: {str(e)}")
-            return jsonify({"error": f"测验生成失败: {str(e)}"}), 500
-
-        # 更新 JSON 文件
-        try:
-            update_survey_json(quiz_json)
-        except Exception as e:
-            return jsonify({"error": f"保存测验失败: {str(e)}"}), 500
-
-        return jsonify({"message": "测验生成成功"}), 200
-
+        
+        # 获取参数
+        question_count = int(request.form.get('questionCount', 10))
+        difficulty = request.form.get('difficulty', 'medium')
+        
+        # 获取备注信息（可选）
+        notes = request.form.get('notes', '')
+        
+        # 提取文本
+        if file.filename.lower().endswith('.pdf'):
+            content = extract_text_from_pdf(file)
+        else:
+            content = file.read().decode('utf-8')
+        
+        # 生成测验题目
+        quiz_json = generate_quiz(content, question_count, difficulty, notes)
+        
+        # 更新前端文件
+        update_survey_json(quiz_json)
+        
+        return jsonify({"success": True})
     except Exception as e:
-        logger.error(f"Unexpected error: {str(e)}")
-        return jsonify({"error": f"服务器错误: {str(e)}"}), 500
+        logger.error(f"生成测验失败: {str(e)}")
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/analyze-quiz', methods=['POST'])
 @with_retry(max_retries=3, backoff_factor=0.5)

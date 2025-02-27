@@ -13,12 +13,11 @@ export function ExportToPDFPage() {
   const model = new Model(json);
   return (
     <div className="container">
-      <h1>SurveyJS PDF Export</h1>
+      <h1>导出测试数据</h1>
       <div className="jumbotron">
-        <p>SurveyJS PDF Export is a client-side extension over the SurveyJS Library that enables users to save surveys as PDF documents.</p>
+        <p>利用SurveyJS PDF提供的服务导出生成的quiz</p>
         <p>NOTE: Dynamic elements and characteristics (visibility, validation, navigation buttons) are not supported.</p>
-        <p>Click the button below to export survey to a PDF document.</p>
-        <button onClick={() => savePDF(model)}>Save as PDF</button>
+        <button onClick={() => savePDF(model)}>保存为PDF</button>
       </div>
     </div>
   );

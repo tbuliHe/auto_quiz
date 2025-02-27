@@ -1,17 +1,51 @@
 // src/pages/Home.js
 import React, { useState } from "react";
 import axios from "axios";
+import {
+  Box,
+  Typography,
+  Button,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Paper,
+  Alert,
+  CircularProgress,
+  Grid
+} from '@mui/material';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { styled } from '@mui/material/styles';
+
+// 自定义文件上传按钮样式
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
 
 export function HomePage() {
   const [file, setFile] = useState(null);
   const [questionCount, setQuestionCount] = useState(10);
   const [difficulty, setDifficulty] = useState("medium");
+  const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [fileSelected, setFileSelected] = useState(false);
 
   const handleFileUpload = (event) => {
-    setFile(event.target.files[0]);
-    setError(null);
+    if (event.target.files[0]) {
+      setFile(event.target.files[0]);
+      setFileSelected(true);
+      setError(null);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -23,76 +57,136 @@ export function HomePage() {
     formData.append("file", file);
     formData.append("questionCount", questionCount);
     formData.append("difficulty", difficulty);
+    // 添加备注信息到表单数据
+    if (notes.trim()) {
+      formData.append("notes", notes);
+    }
 
     try {
-      const response = await axios.post("http://localhost:5000/generate-quiz", formData);
+      await axios.post("http://localhost:5000/generate-quiz", formData);
+      setLoading(false);
+      // 显示成功消息
       alert("题目生成成功!");
     } catch (error) {
+      setLoading(false);
       console.error("Error details:", error.response?.data);
       const errorMessage = error.response?.data?.error || error.message;
       setError(`生成失败: ${errorMessage}`);
-    } finally {
-      setLoading(false);
     }
   };
 
   return (
-    <div className="container">
-      <h1>生成知识测验</h1>
-      <div className="col-lg-6 offset-lg-3">
-        <form onSubmit={handleSubmit}>
-          <div className="form-group mb-3">
-            <label>上传知识库文档 (PDF/TXT)</label>
-            <input 
-              type="file" 
-              className="form-control"
-              accept=".pdf,.txt"
-              onChange={handleFileUpload}
-              required 
-            />
-          </div>
-          
-          <div className="form-group mb-3">
-            <label>题目数量</label>
-            <input
-              type="number"
-              className="form-control"
-              min="5"
-              max="20"
-              value={questionCount}
-              onChange={(e) => setQuestionCount(e.target.value)}
-              required
-            />
-          </div>
+    <Box sx={{ my: 4 }}>
+      <Typography variant="h4" component="h1" gutterBottom align="center" sx={{ mb: 4 }}>
+        知识测验生成器
+      </Typography>
 
-          <div className="form-group mb-3">
-            <label>难度等级</label>
-            <select 
-              className="form-control"
-              value={difficulty}
-              onChange={(e) => setDifficulty(e.target.value)}
-            >
-              <option value="easy">简单</option>
-              <option value="medium">中等</option>
-              <option value="hard">困难</option>
-            </select>
-          </div>
-
-          {error && (
-            <div className="alert alert-danger mb-3" role="alert">
-              {error}
-            </div>
-          )}
-          
-          <button 
-            type="submit" 
-            className="btn btn-primary"
-            disabled={loading || !file}
+      <Grid container justifyContent="center">
+        <Grid item xs={12} sm={10} md={8} lg={6}>
+          <Paper 
+            elevation={3} 
+            sx={{ 
+              p: 4, 
+              borderRadius: 2,
+              background: 'linear-gradient(to bottom, #ffffff, #f9f9f9)'
+            }}
           >
-            {loading ? '生成中...' : '生成测验'}
-          </button>
-        </form>
-      </div>
-    </div>
+            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+              <Box sx={{ mb: 3, textAlign: 'center' }}>
+                <Button
+                  component="label"
+                  variant="contained"
+                  startIcon={<CloudUploadIcon />}
+                  sx={{ px: 3, py: 1.5 }}
+                >
+                  上传知识库文档 (PDF/TXT)
+                  <VisuallyHiddenInput type="file" accept=".pdf,.txt" onChange={handleFileUpload} />
+                </Button>
+                {fileSelected && (
+                  <Typography variant="body2" sx={{ mt: 1, color: 'success.main' }}>
+                    已选择文件: {file?.name}
+                  </Typography>
+                )}
+              </Box>
+
+              <TextField
+                fullWidth
+                label="题目数量"
+                type="number"
+                value={questionCount}
+                onChange={(e) => setQuestionCount(e.target.value)}
+                InputProps={{ inputProps: { min: 5, max: 20 } }}
+                margin="normal"
+                required
+              />
+
+              <FormControl fullWidth margin="normal">
+                <InputLabel>难度等级</InputLabel>
+                <Select
+                  value={difficulty}
+                  label="难度等级"
+                  onChange={(e) => setDifficulty(e.target.value)}
+                >
+                  <MenuItem value="easy">简单</MenuItem>
+                  <MenuItem value="medium">中等</MenuItem>
+                  <MenuItem value="hard">困难</MenuItem>
+                </Select>
+              </FormControl>
+
+              {/* 添加备注文本框 */}
+              <TextField
+                fullWidth
+                label="备注（可选）"
+                placeholder="添加测验生成的特殊要求或附加信息"
+                multiline
+                rows={3}
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                margin="normal"
+                helperText="例如：侧重某个章节、题型偏好、特定知识点等"
+              />
+
+              {error && (
+                <Alert severity="error" sx={{ mt: 2 }}>
+                  {error}
+                </Alert>
+              )}
+
+              <Box sx={{ mt: 3, textAlign: 'center' }}>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                  disabled={loading || !file}
+                  sx={{ px: 4, py: 1.2 }}
+                >
+                  {loading ? <CircularProgress size={24} color="inherit" /> : '生成测验'}
+                </Button>
+              </Box>
+            </Box>
+          </Paper>
+
+          <Box sx={{ mt: 4, p: 3, backgroundColor: 'rgba(25, 118, 210, 0.05)', borderRadius: 2 }}>
+            <Typography variant="h6" gutterBottom>使用说明</Typography>
+            <Typography variant="body1" paragraph>
+              1. 上传含有学习内容的PDF或TXT文档
+            </Typography>
+            <Typography variant="body1" paragraph>
+              2. 选择要生成的题目数量和难度级别
+            </Typography>
+            <Typography variant="body1" paragraph>
+              3. 可选：添加备注信息以定制测验内容
+            </Typography>
+            <Typography variant="body1" paragraph>
+              4. 点击"生成测验"按钮创建测验
+            </Typography>
+            <Typography variant="body1">
+              5. 生成后，点击顶部导航栏中的"测验"开始答题
+            </Typography>
+          </Box>
+        </Grid>
+      </Grid>
+    </Box>
   );
 }

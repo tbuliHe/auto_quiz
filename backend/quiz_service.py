@@ -5,12 +5,13 @@ from config import get_model
 
 logger = logging.getLogger(__name__)
 
-def generate_quiz(content, question_count, difficulty):
+def generate_quiz(content, question_count, difficulty, notes=None):
     """生成测验题目"""
     model = get_model()
     example_json = json.loads(os.getenv('EXAMPLE_JSON'))
     
-    prompt = f"""
+    # 构建基本提示
+    prompt_base = f"""
     你是一个专业的考试出题专家。请根据以下内容生成{question_count}道{difficulty}难度的选择题。
     要求：
     1. 每个问题必须有4个选项
@@ -18,7 +19,16 @@ def generate_quiz(content, question_count, difficulty):
     3. 题目难度要符合{difficulty}级别
     4. 必须严格按照提供的JSON格式生成
     5. 必须确保生成的是合法的JSON格式
+    """
     
+    # 如果有备注信息，添加到提示中
+    if notes and notes.strip():
+        prompt_base += f"""
+    6. 特别要求: {notes}
+    """
+    
+    # 完成提示
+    prompt = prompt_base + f"""
     参考内容:
     {content[:3000]}
     
