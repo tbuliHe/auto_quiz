@@ -5,17 +5,35 @@ from config import get_model
 
 logger = logging.getLogger(__name__)
 
-def generate_quiz(content, question_count, difficulty, notes=None):
+def generate_quiz(content, question_count, difficulty, include_multiple_choice=True, include_fill_in_blank=False, notes=None):
     """生成测验题目"""
     model = get_model()
     example_json = json.loads(os.getenv('EXAMPLE_JSON'))
     
+    # 构建题型要求
+    question_type_requirements = []
+    if include_multiple_choice and include_fill_in_blank:
+        question_type_requirements.append("请混合生成选择题和填空题")
+        question_type_requirements.append("选择题使用'radiogroup'类型，填空题使用'text'类型")
+        question_type_requirements.append("填空题的格式为: {\"type\": \"text\", \"name\": \"questionX\", \"title\": \"题目内容\", \"isRequired\": true, \"correctAnswer\": \"正确答案\"}")
+    elif include_fill_in_blank:
+        question_type_requirements.append("请仅生成填空题")
+        question_type_requirements.append("填空题使用'text'类型")
+        question_type_requirements.append("填空题的格式为: {\"type\": \"text\", \"name\": \"questionX\", \"title\": \"题目内容\", \"isRequired\": true, \"correctAnswer\": \"正确答案\"}")
+    else:  # 默认为选择题
+        question_type_requirements.append("请仅生成选择题")
+        question_type_requirements.append("选择题使用'radiogroup'类型")
+    
     # 构建基本提示
     prompt_base = f"""
-    你是一个专业的考试出题专家。请根据以下内容生成{question_count}道{difficulty}难度的选择题。
-    要求：
-    1. 每个问题必须有4个选项
-    2. 必须指定正确答案
+    你是一个专业的考试出题专家。请根据以下内容生成{question_count}道{difficulty}难度的题目。
+    
+    题型要求：
+    {chr(10).join(question_type_requirements)}
+    
+    一般要求：
+    1. 每个选择题必须有4个选项
+    2. 所有题目必须指定正确答案
     3. 题目难度要符合{difficulty}级别
     4. 必须严格按照提供的JSON格式生成
     5. 必须确保生成的是合法的JSON格式

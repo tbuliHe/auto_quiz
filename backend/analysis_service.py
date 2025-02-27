@@ -61,15 +61,30 @@ def analyze_quiz_results(user_answers):
                     user_answer = user_answers[question_id]
                     correct_answer = question.get('correctAnswer')
                     
-                    if user_answer != correct_answer:
-                        incorrect_questions.append({
-                            'question': question.get('title'),
-                            'userAnswer': user_answer,
-                            'correctAnswer': correct_answer,
-                            'options': question.get('choices')
-                        })
-                    else:
-                        correct_count += 1
+                    # 处理不同题型
+                    if question.get('type') == 'text':  # 填空题
+                        # 填空题可能需要更灵活的答案匹配
+                        is_correct = user_answer.strip().lower() == correct_answer.strip().lower()
+                        if not is_correct:
+                            incorrect_questions.append({
+                                'question': question.get('title'),
+                                'userAnswer': user_answer,
+                                'correctAnswer': correct_answer,
+                                'type': 'text'  # 表明这是填空题
+                            })
+                        else:
+                            correct_count += 1
+                    else:  # 选择题或其他类型
+                        if user_answer != correct_answer:
+                            incorrect_questions.append({
+                                'question': question.get('title'),
+                                'userAnswer': user_answer,
+                                'correctAnswer': correct_answer,
+                                'options': question.get('choices'),
+                                'type': 'radiogroup'  # 表明这是选择题
+                            })
+                        else:
+                            correct_count += 1
     except Exception as e:
         logger.error(f"处理答案时出错: {str(e)}")
         # 继续执行，使用已收集的信息

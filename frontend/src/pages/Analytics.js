@@ -138,6 +138,8 @@ export function AnalyticsPage() {
                   <ListItemText 
                     primary={`问题 ${index + 1}: ${item.question}`} 
                     primaryTypographyProps={{ fontWeight: 'bold' }} 
+                    secondary={item.type === 'text' ? '(填空题)' : '(选择题)'}
+                    secondaryTypographyProps={{ color: 'white' }}
                   />
                 </ListItem>
                 
@@ -156,21 +158,26 @@ export function AnalyticsPage() {
                       </Grid>
                     </Grid>
                     
-                    <Typography variant="subtitle2" sx={{ mt: 2, mb: 1 }}>选项:</Typography>
-                    <Box sx={{ pl: 2 }}>
-                      {item.options && item.options.map((option, idx) => (
-                        <Typography key={idx} variant="body2" sx={{ 
-                          py: 0.5,
-                          color: option === item.correctAnswer ? 'success.main' : 'inherit',
-                          fontWeight: option === item.correctAnswer ? 'bold' : 'normal',
-                        }}>
-                          {option === item.correctAnswer ? (
-                            <CheckCircleIcon fontSize="small" sx={{ mr: 1, verticalAlign: 'middle', color: 'success.main' }} />
-                          ) : null}
-                          {option}
-                        </Typography>
-                      ))}
-                    </Box>
+                    {/* 只为选择题显示选项列表 */}
+                    {item.type === 'radiogroup' && item.options && (
+                      <>
+                        <Typography variant="subtitle2" sx={{ mt: 2, mb: 1 }}>选项:</Typography>
+                        <Box sx={{ pl: 2 }}>
+                          {item.options.map((option, idx) => (
+                            <Typography key={idx} variant="body2" sx={{ 
+                              py: 0.5,
+                              color: option === item.correctAnswer ? 'success.main' : 'inherit',
+                              fontWeight: option === item.correctAnswer ? 'bold' : 'normal',
+                            }}>
+                              {option === item.correctAnswer ? (
+                                <CheckCircleIcon fontSize="small" sx={{ mr: 1, verticalAlign: 'middle', color: 'success.main' }} />
+                              ) : null}
+                              {option}
+                            </Typography>
+                          ))}
+                        </Box>
+                      </>
+                    )}
                   </CardContent>
                 </Card>
               </React.Fragment>

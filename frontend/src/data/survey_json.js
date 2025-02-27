@@ -1,5 +1,5 @@
 export const json = {
-  "completedHtml": "<h3>Thank you for completing the quiz!</h3><div class='processing-message'><p>The system is analyzing your answers, please wait...</p><div class='loading-spinner'></div><p>You will be automatically redirected to the analysis page in a few seconds</p></div><style>.processing-message{text-align:center;margin-top:20px;}.loading-spinner{display:inline-block;width:40px;height:40px;margin:20px auto;border:4px solid rgba(0,0,0,0.1);border-radius:50%;border-top-color:#337ab7;animation:spin 1s ease-in-out infinite;}@keyframes spin{to{transform:rotate(360deg);}}</style>",
+  "completedHtml": "<h3>感谢您完成测验</h3><div class='processing-message'><p>系统正在分析您的答案，请稍候...</p><div class='loading-spinner'></div><p>几秒后将自动跳转到分析页面</p></div><style>.processing-message{text-align:center;margin-top:20px;}.loading-spinner{display:inline-block;width:40px;height:40px;margin:20px auto;border:4px solid rgba(0,0,0,0.1);border-radius:50%;border-top-color:#337ab7;animation:spin 1s ease-in-out infinite;}@keyframes spin{to{transform:rotate(360deg);}}</style>",
   "pages": [
     {
       "name": "page1",
@@ -7,132 +7,55 @@ export const json = {
         {
           "type": "radiogroup",
           "name": "question1",
-          "title": "Which of the following is the most accurate definition of a set in mathematics?",
+          "title": "考虑一个具有三个进程（P1、P2 和 P3）的系统，这些进程的 burst time 分别为 8、4 和 9 个时间单位。采用先到先服务（FCFS）调度算法。如果进程到达顺序为 P2、P3、P1，则平均等待时间是多少？",
           "isRequired": true,
           "choices": [
-            "A collection of well-defined and distinct objects.",
-            "A group of similar elements.",
-            "A series of related items.",
-            "A list of items."
+            "9.0",
+            "8.0",
+            "10.0",
+            "11.0"
           ],
-          "correctAnswer": "A collection of well-defined and distinct objects."
+          "correctAnswer": "10.0"
         },
         {
-          "type": "radiogroup",
+          "type": "text",
           "name": "question2",
-          "title": "Given sets A = {1, 2, 3} and B = {3, 4, 5}, what is the result of A ∪ B (A union B)?",
+          "title": "在银行家算法中，假设有5个进程P0到P4和3种资源类型A，B，C。现有如下状态：\nAllocation: \n A B C\n P0 0 1 0\n P1 2 0 0\n P2 3 0 2\n P3 2 1 1\n P4 0 0 2\n\nMax:\n A B C\n P0 7 5 3\n P1 3 2 2\n P2 9 0 2\n P3 2 2 2\n P4 4 3 3\n\nAvailable: \n A B C\n 3 3 2\n\n当前系统状态是否安全？如果安全，给出一个安全序列。请写出其中一个安全序列。（例如：<P0, P1, P2, P3, P4>）",
           "isRequired": true,
-          "choices": [
-            "{3}",
-            "{1, 2, 3, 4, 5}",
-            "{1, 2, 4, 5}",
-            "{}"
-          ],
-          "correctAnswer": "{1, 2, 3, 4, 5}"
+          "correctAnswer": "<P1, P3, P0, P2, P4>"
         },
         {
           "type": "radiogroup",
           "name": "question3",
-          "title": "What is the power set of the set {a, b}?",
+          "title": "以下哪种磁盘调度算法可能会导致饥饿？",
           "isRequired": true,
           "choices": [
-            "{{}, {a}, {b}, {a, b}}",
-            "{a, b}",
-            "{{}, {a, b}}",
-            "{a, b, {a, b}}"
+            "FCFS (First-Come, First-Served)",
+            "SSTF (Shortest Seek Time First)",
+            "SCAN",
+            "LOOK"
           ],
-          "correctAnswer": "{{}, {a}, {b}, {a, b}}"
+          "correctAnswer": "SSTF (Shortest Seek Time First)"
         },
         {
-          "type": "radiogroup",
+          "type": "text",
           "name": "question4",
-          "title": "If A is a subset of B (A ⊆ B), which of the following is always true?",
+          "title": "在使用成组链接法的文件系统中，如果一个磁盘块可以存储1023个磁盘块的编号，那么一个空闲块链表的块最多可以表示______个空闲块。",
           "isRequired": true,
-          "choices": [
-            "A ∩ B = A",
-            "A ∪ B = A",
-            "A - B = A",
-            "B - A = A"
-          ],
-          "correctAnswer": "A ∩ B = A"
+          "correctAnswer": "1024"
         },
         {
           "type": "radiogroup",
           "name": "question5",
-          "title": "Which of the following is an example of constructing a set using set-builder notation?",
+          "title": "以下哪个选项不是用于解决临界区问题的软件方案？",
           "isRequired": true,
           "choices": [
-            "{x | x is an even number and x < 10}",
-            "{2, 4, 6, 8}",
-            "A = {1, 2, 3}",
-            "B = {a, b, c}"
+            "Peterson算法",
+            "Dekker算法",
+            "Test-and-Set锁",
+            "禁用中断"
           ],
-          "correctAnswer": "{x | x is an even number and x < 10}"
-        },
-        {
-          "type": "radiogroup",
-          "name": "question6",
-          "title": "What is the cardinality of the power set of a set with n elements?",
-          "isRequired": true,
-          "choices": [
-            "n",
-            "2n",
-            "n^2",
-            "2^n"
-          ],
-          "correctAnswer": "2^n"
-        },
-        {
-          "type": "radiogroup",
-          "name": "question7",
-          "title": "Given two sets A and B, what does A - B represent?",
-          "isRequired": true,
-          "choices": [
-            "The elements that are in both A and B.",
-            "The elements that are in A but not in B.",
-            "The elements that are in B but not in A.",
-            "All the elements in A and B."
-          ],
-          "correctAnswer": "The elements that are in A but not in B."
-        },
-        {
-          "type": "radiogroup",
-          "name": "question8",
-          "title": "What is the Cartesian product of A = {1, 2} and B = {a, b}?",
-          "isRequired": true,
-          "choices": [
-            "{(1, a), (2, b)}",
-            "{(a, 1), (b, 2)}",
-            "{(1, a), (1, b), (2, a), (2, b)}",
-            "{1, 2, a, b}"
-          ],
-          "correctAnswer": "{(1, a), (1, b), (2, a), (2, b)}"
-        },
-        {
-          "type": "radiogroup",
-          "name": "question9",
-          "title": "In set theory, what is the complement of a set A (denoted as A')?",
-          "isRequired": true,
-          "choices": [
-            "The intersection of A with the universal set.",
-            "The set of all elements not in A within the universal set.",
-            "The empty set.",
-            "The union of A with itself."
-          ],
-          "correctAnswer": "The set of all elements not in A within the universal set."
-        },
-        {
-          "type": "radiogroup",
-          "name": "question10",
-          "title": "Which of the following statements is TRUE regarding the empty set (∅)?",
-          "isRequired": true,
-          "choices": [
-            "The empty set is a subset of every set.",
-            "The empty set contains all elements.",
-            "The empty set is not a subset of any set.",
-            "The empty set is equal to the universal set."
-          ],
-          "correctAnswer": "The empty set is a subset of every set."
+          "correctAnswer": "Test-and-Set锁"
         }
       ]
     }
@@ -141,15 +64,15 @@ export const json = {
   "completedHtmlOnCondition": [
     {
       "expression": "{correctCount} == {questionCount}",
-      "html": "<h3>Congratulations! You answered all questions correctly!</h3><div class='processing-message success-message'><p>The system is generating a detailed analysis report, please wait...</p><div class='loading-spinner'></div><p>You will be automatically redirected to the analysis page in a few seconds</p></div><style>.processing-message{text-align:center;margin-top:20px;}.success-message{color:#28a745;}.loading-spinner{display:inline-block;width:40px;height:40px;margin:20px auto;border:4px solid rgba(0,0,0,0.1);border-radius:50%;border-top-color:#28a745;animation:spin 1s ease-in-out infinite;}@keyframes spin{to{transform:rotate(360deg);}}</style>"
+      "html": "<h3>恭喜您全部答对！</h3><div class='processing-message success-message'><p>系统正在生成详细分析报告，请稍候...</p><div class='loading-spinner'></div><p>几秒后将自动跳转到分析页面</p></div><style>.processing-message{text-align:center;margin-top:20px;}.success-message{color:#28a745;}.loading-spinner{display:inline-block;width:40px;height:40px;margin:20px auto;border:4px solid rgba(0,0,0,0.1);border-radius:50%;border-top-color:#28a745;animation:spin 1s ease-in-out infinite;}@keyframes spin{to{transform:rotate(360deg);}}</style>"
     },
     {
       "expression": "{correctCount} >= {questionCount}/2",
-      "html": "<h3>You answered more than half correctly, keep it up!</h3><div class='processing-message warning-message'><p>The system is analyzing your strengths and weaknesses, please wait...</p><div class='loading-spinner'></div><p>You will be automatically redirected to the analysis page in a few seconds</p></div><style>.processing-message{text-align:center;margin-top:20px;}.warning-message{color:#ffc107;}.loading-spinner{display:inline-block;width:40px;height:40px;margin:20px auto;border:4px solid rgba(0,0,0,0.1);border-radius:50%;border-top-color:#ffc107;animation:spin 1s ease-in-out infinite;}@keyframes spin{to{transform:rotate(360deg);}}</style>"
+      "html": "<h3>答对了一半以上，继续加油！</h3><div class='processing-message warning-message'><p>系统正在分析您的优势和不足，请稍候...</p><div class='loading-spinner'></div><p>几秒后将自动跳转到分析页面</p></div><style>.processing-message{text-align:center;margin-top:20px;}.warning-message{color:#ffc107;}.loading-spinner{display:inline-block;width:40px;height:40px;margin:20px auto;border:4px solid rgba(0,0,0,0.1);border-radius:50%;border-top-color:#ffc107;animation:spin 1s ease-in-out infinite;}@keyframes spin{to{transform:rotate(360deg);}}</style>"
     },
     {
       "expression": "{correctCount} < {questionCount}/2",
-      "html": "<h3>You answered few questions correctly, please continue studying.</h3><div class='processing-message danger-message'><p>The system is generating targeted study suggestions, please wait...</p><div class='loading-spinner'></div><p>You will be automatically redirected to the analysis page in a few seconds</p></div><style>.processing-message{text-align:center;margin-top:20px;}.danger-message{color:#dc3545;}.loading-spinner{display:inline-block;width:40px;height:40px;margin:20px auto;border:4px solid rgba(0,0,0,0.1);border-radius:50%;border-top-color:#dc3545;animation:spin 1s ease-in-out infinite;}@keyframes spin{to{transform:rotate(360deg);}}</style>"
+      "html": "<h3>答对题目较少，请继续学习。</h3><div class='processing-message danger-message'><p>系统正在生成针对性学习建议，请稍候...</p><div class='loading-spinner'></div><p>几秒后将自动跳转到分析页面</p></div><style>.processing-message{text-align:center;margin-top:20px;}.danger-message{color:#dc3545;}.loading-spinner{display:inline-block;width:40px;height:40px;margin:20px auto;border:4px solid rgba(0,0,0,0.1);border-radius:50%;border-top-color:#dc3545;animation:spin 1s ease-in-out infinite;}@keyframes spin{to{transform:rotate(360deg);}}</style>"
     }
   ]
 };

@@ -60,6 +60,14 @@ def create_quiz():
         question_count = int(request.form.get('questionCount', 10))
         difficulty = request.form.get('difficulty', 'medium')
         
+        # 获取题目类型
+        include_multiple_choice = request.form.get('includeMultipleChoice', 'true').lower() in ('true', '1', 't')
+        include_fill_in_blank = request.form.get('includeFillInBlank', 'false').lower() in ('true', '1', 't')
+        
+        # 如果两种题型都没选，默认选择选择题
+        if not include_multiple_choice and not include_fill_in_blank:
+            include_multiple_choice = True
+        
         # 获取备注信息（可选）
         notes = request.form.get('notes', '')
         
@@ -70,7 +78,8 @@ def create_quiz():
             content = file.read().decode('utf-8')
         
         # 生成测验题目
-        quiz_json = generate_quiz(content, question_count, difficulty, notes)
+        quiz_json = generate_quiz(content, question_count, difficulty, 
+                                  include_multiple_choice, include_fill_in_blank, notes)
         
         # 更新前端文件
         update_survey_json(quiz_json)

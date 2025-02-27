@@ -13,7 +13,12 @@ import {
   Paper,
   Alert,
   CircularProgress,
-  Grid
+  Grid,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
+  Divider,
+  Chip
 } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { styled } from '@mui/material/styles';
@@ -39,6 +44,11 @@ export function HomePage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [fileSelected, setFileSelected] = useState(false);
+  // 题目类型状态
+  const [questionTypes, setQuestionTypes] = useState({
+    multipleChoice: true,
+    fillInBlank: false
+  });
 
   const handleFileUpload = (event) => {
     if (event.target.files[0]) {
@@ -46,6 +56,24 @@ export function HomePage() {
       setFileSelected(true);
       setError(null);
     }
+  };
+
+  // 处理题目类型变更
+  const handleQuestionTypeChange = (event) => {
+    const { name, checked } = event.target;
+    
+    // 至少需要选择一种题型
+    if (name === 'multipleChoice' && !checked && !questionTypes.fillInBlank) {
+      return; // 不允许取消选择此类型，因为它是最后一个被选择的
+    }
+    if (name === 'fillInBlank' && !checked && !questionTypes.multipleChoice) {
+      return; // 同上
+    }
+    
+    setQuestionTypes({
+      ...questionTypes,
+      [name]: checked
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -57,6 +85,11 @@ export function HomePage() {
     formData.append("file", file);
     formData.append("questionCount", questionCount);
     formData.append("difficulty", difficulty);
+    
+    // 添加题目类型信息
+    formData.append("includeMultipleChoice", questionTypes.multipleChoice);
+    formData.append("includeFillInBlank", questionTypes.fillInBlank);
+    
     // 添加备注信息到表单数据
     if (notes.trim()) {
       formData.append("notes", notes);
@@ -133,6 +166,49 @@ export function HomePage() {
                 </Select>
               </FormControl>
 
+              {/* 添加题目类型选择 */}
+              <Box sx={{ mt: 2, mb: 1 }}>
+                <Typography variant="subtitle1" gutterBottom>
+                  题目类型
+                </Typography>
+                <FormGroup row>
+                  <FormControlLabel
+                    control={
+                      <Checkbox 
+                        checked={questionTypes.multipleChoice} 
+                        onChange={handleQuestionTypeChange} 
+                        name="multipleChoice" 
+                      />
+                    }
+                    label={
+                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <span>选择题</span>
+                        {questionTypes.multipleChoice && (
+                          <Chip 
+                            label="默认" 
+                            size="small" 
+                            color="primary" 
+                            sx={{ ml: 1, height: 20 }} 
+                          />
+                        )}
+                      </Box>
+                    }
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox 
+                        checked={questionTypes.fillInBlank} 
+                        onChange={handleQuestionTypeChange} 
+                        name="fillInBlank" 
+                      />
+                    }
+                    label="填空题"
+                  />
+                </FormGroup>
+              </Box>
+              
+              <Divider sx={{ my: 2 }} />
+
               {/* 添加备注文本框 */}
               <TextField
                 fullWidth
@@ -176,13 +252,16 @@ export function HomePage() {
               2. 选择要生成的题目数量和难度级别
             </Typography>
             <Typography variant="body1" paragraph>
-              3. 可选：添加备注信息以定制测验内容
+              3. 选择题目类型（选择题和/或填空题）
             </Typography>
             <Typography variant="body1" paragraph>
-              4. 点击"生成测验"按钮创建测验
+              4. 可选：添加备注信息以定制测验内容
+            </Typography>
+            <Typography variant="body1" paragraph>
+              5. 点击"生成测验"按钮创建测验
             </Typography>
             <Typography variant="body1">
-              5. 生成后，点击顶部导航栏中的"测验"开始答题
+              6. 生成后，点击顶部导航栏中的"测验"开始答题
             </Typography>
           </Box>
         </Grid>
