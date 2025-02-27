@@ -6,45 +6,51 @@ import ast
 
 logger = logging.getLogger(__name__)
 
-def analyze_quiz_results(user_answers):
+# 修改function signature以接受quiz_json参数
+def analyze_quiz_results(user_answers, quiz_json=None):
     """分析测验结果"""
     # 加载测验题目
-    try:
-        # 读取survey_json.js内容
-        with open("../frontend/src/data/survey_json.js", 'r', encoding='utf-8') as f:
-            content = f.read()
-            
-        # 提取JSON部分 - 使用更安全的方法
+    if quiz_json:
+        # 使用传入的quiz_json
+        logger.info("使用传入的quiz_json进行分析")
+    else:
+        # 从文件加载quiz_json（兼容旧版本）
         try:
-            # 方法1: 使用正则表达式提取
-            json_match = re.search(r'export const json = ({.+});$', content, re.DOTALL)
-            if json_match:
-                json_str = json_match.group(1)
-                quiz_json = json.loads(json_str)
-            else:
-                # 方法2: 如果正则匹配失败，尝试使用ast模块解析
-                # 移除JavaScript部分，仅保留JSON对象
-                content = content.strip()
-                if content.startswith('export const json = ') and content.endswith(';'):
-                    json_str = content[18:-1]  # 移除'export const json = '和末尾的';'
+            # 读取survey_json.js内容
+            with open("../frontend/src/data/survey_json.js", 'r', encoding='utf-8') as f:
+                content = f.read()
+                
+            # 提取JSON部分 - 使用更安全的方法
+            try:
+                # 方法1: 使用正则表达式提取
+                json_match = re.search(r'export const json = ({.+});$', content, re.DOTALL)
+                if json_match:
+                    json_str = json_match.group(1)
                     quiz_json = json.loads(json_str)
                 else:
-                    # 方法3: 创建一个备用的JSON结构
-                    logger.warning("无法解析测验JSON，使用默认结构")
+                    # 方法2: 如果正则匹配失败，尝试使用ast模块解析
+                    # 移除JavaScript部分，仅保留JSON对象
+                    content = content.strip()
+                    if content.startswith('export const json = ') and content.endswith(';'):
+                        json_str = content[18:-1]  # 移除'export const json = '和末尾的';'
+                        quiz_json = json.loads(json_str)
+                    else:
+                        # 方法3: 创建一个备用的JSON结构
+                        logger.warning("无法解析测验JSON，使用默认结构")
+                        quiz_json = create_default_quiz_json()
+            except json.JSONDecodeError as e:
+                logger.error(f"JSON解析错误: {str(e)}")
+                # 尝试清理JSON字符串
+                json_str = clean_json_string(json_match.group(1) if json_match else content)
+                try:
+                    quiz_json = json.loads(json_str)
+                except:
+                    logger.warning("清理后仍无法解析JSON，使用默认结构")
                     quiz_json = create_default_quiz_json()
-        except json.JSONDecodeError as e:
-            logger.error(f"JSON解析错误: {str(e)}")
-            # 尝试清理JSON字符串
-            json_str = clean_json_string(json_match.group(1) if json_match else content)
-            try:
-                quiz_json = json.loads(json_str)
-            except:
-                logger.warning("清理后仍无法解析JSON，使用默认结构")
-                quiz_json = create_default_quiz_json()
-    except Exception as e:
-        logger.error(f"加载测验题目失败: {str(e)}")
-        # 使用默认的测验结构而不是引发异常
-        quiz_json = create_default_quiz_json()
+        except Exception as e:
+            logger.error(f"加载测验题目失败: {str(e)}")
+            # 使用默认的测验结构而不是引发异常
+            quiz_json = create_default_quiz_json()
     
     # 比较答案，找出错误的题目
     incorrect_questions = []
@@ -146,7 +152,7 @@ def generate_analysis(total_questions, correct_count, incorrect_questions):
         return "恭喜！您回答了所有问题正确。"
     
     analysis_prompt = f"""
-    基于以下测验结果，分析用户的知识点掌握情况并提供改进建议。
+    基于以下测验结果，分析用户的知识点掌握情况并提供改进建议。以“测试结果分析“作为题目
 
     总题数: {total_questions}
     正确答案: {correct_count}

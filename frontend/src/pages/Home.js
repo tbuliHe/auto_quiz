@@ -22,6 +22,8 @@ import {
 } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { styled } from '@mui/material/styles';
+import { useHistory } from "react-router-dom";
+import { generateQuiz } from "../services/api";
 
 // 自定义文件上传按钮样式
 const VisuallyHiddenInput = styled('input')({
@@ -37,6 +39,7 @@ const VisuallyHiddenInput = styled('input')({
 });
 
 export function HomePage() {
+  const history = useHistory();
   const [file, setFile] = useState(null);
   const [questionCount, setQuestionCount] = useState(10);
   const [difficulty, setDifficulty] = useState("medium");
@@ -96,10 +99,12 @@ export function HomePage() {
     }
 
     try {
-      await axios.post("http://localhost:5000/generate-quiz", formData);
+      // 修改: 从响应中获取quiz_id
+      const response = await generateQuiz(formData);
       setLoading(false);
-      // 显示成功消息
-      alert("题目生成成功!");
+      
+      // 生成成功后直接跳转到相应测验页面
+      history.push(`/survey/${response.quiz_id}`);
     } catch (error) {
       setLoading(false);
       console.error("Error details:", error.response?.data);

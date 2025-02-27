@@ -7,55 +7,55 @@ export const json = {
         {
           "type": "radiogroup",
           "name": "question1",
-          "title": "考虑一个具有三个进程（P1、P2 和 P3）的系统，这些进程的 burst time 分别为 8、4 和 9 个时间单位。采用先到先服务（FCFS）调度算法。如果进程到达顺序为 P2、P3、P1，则平均等待时间是多少？",
+          "title": "以下哪种几何变换能够保持物体的“平直性”，即变换后平行的两条线依然平行？",
           "isRequired": true,
           "choices": [
-            "9.0",
-            "8.0",
-            "10.0",
-            "11.0"
+            "刚体变换",
+            "相似变换",
+            "仿射变换",
+            "投影变换"
           ],
-          "correctAnswer": "10.0"
+          "correctAnswer": "仿射变换"
         },
         {
           "type": "text",
           "name": "question2",
-          "title": "在银行家算法中，假设有5个进程P0到P4和3种资源类型A，B，C。现有如下状态：\nAllocation: \n A B C\n P0 0 1 0\n P1 2 0 0\n P2 3 0 2\n P3 2 1 1\n P4 0 0 2\n\nMax:\n A B C\n P0 7 5 3\n P1 3 2 2\n P2 9 0 2\n P3 2 2 2\n P4 4 3 3\n\nAvailable: \n A B C\n 3 3 2\n\n当前系统状态是否安全？如果安全，给出一个安全序列。请写出其中一个安全序列。（例如：<P0, P1, P2, P3, P4>）",
+          "title": "在估计单应性变换矩阵的传统方法中，通常使用 ______ 算法来剔除错误匹配的特征点对。",
           "isRequired": true,
-          "correctAnswer": "<P1, P3, P0, P2, P4>"
+          "correctAnswer": "RANSAC"
         },
         {
           "type": "radiogroup",
           "name": "question3",
-          "title": "以下哪种磁盘调度算法可能会导致饥饿？",
+          "title": "图像滤波和图像形变的主要区别是什么？",
           "isRequired": true,
           "choices": [
-            "FCFS (First-Come, First-Served)",
-            "SSTF (Shortest Seek Time First)",
-            "SCAN",
-            "LOOK"
+            "图像滤波改变图像的空间坐标，图像形变改变图像的像素取值。",
+            "图像滤波和图像形变都改变图像的空间坐标。",
+            "图像滤波改变图像的像素取值，图像形变改变图像的空间坐标。",
+            "图像滤波和图像形变都改变图像的像素取值。"
           ],
-          "correctAnswer": "SSTF (Shortest Seek Time First)"
+          "correctAnswer": "图像滤波改变图像的像素取值，图像形变改变图像的空间坐标。"
         },
         {
           "type": "text",
           "name": "question4",
-          "title": "在使用成组链接法的文件系统中，如果一个磁盘块可以存储1023个磁盘块的编号，那么一个空闲块链表的块最多可以表示______个空闲块。",
+          "title": "使用相机从不同位置拍摄同一平面物体的图像之间存在 _________，可以用投影变换表示（假设无镜头畸变）。",
           "isRequired": true,
-          "correctAnswer": "1024"
+          "correctAnswer": "单应性"
         },
         {
           "type": "radiogroup",
           "name": "question5",
-          "title": "以下哪个选项不是用于解决临界区问题的软件方案？",
+          "title": "在几何形变的实现中，哪种变形方式可以避免产生空洞或波纹问题？",
           "isRequired": true,
           "choices": [
-            "Peterson算法",
-            "Dekker算法",
-            "Test-and-Set锁",
-            "禁用中断"
+            "正向变形",
+            "反向变形",
+            "两者都会产生",
+            "两者都不会产生"
           ],
-          "correctAnswer": "Test-and-Set锁"
+          "correctAnswer": "反向变形"
         }
       ]
     }

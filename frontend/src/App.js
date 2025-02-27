@@ -12,10 +12,13 @@ import SchoolIcon from '@mui/icons-material/School';
 
 import "./App.css";
 import { HomePage } from "./pages/Home";
-import { CreatorPage } from "./pages/Creator";
 import { SurveyPage } from "./pages/Survey";
+import { QuizHistoryPage } from "./pages/QuizHistory";
 import { ExportToPDFPage } from "./pages/Export";
 import { AnalyticsPage } from "./pages/Analytics";
+import { AnalyticsHistoryPage } from "./pages/AnalyticsHistory";
+import { SpecificSurveyPage } from "./pages/SpecificSurvey";
+import { SpecificAnalyticsPage } from "./pages/SpecificAnalytics";
 
 // 导入字体
 import '@fontsource/roboto/300.css';
@@ -81,17 +84,19 @@ function App() {
               </Typography>
               <Button color="inherit" component={Link} to="/">首页</Button>
               <Button color="inherit" component={Link} to="/survey">测验</Button>
-              <Button color="inherit" component={Link} to="/export">导出PDF</Button>
               <Button color="inherit" component={Link} to="/analytics">分析</Button>
+              <Button color="inherit" component={Link} to="/export">导出</Button>
             </Toolbar>
           </AppBar>
 
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Box sx={{ py: 2 }}>
               <Switch>
-                <Route path="/survey" component={SurveyPage} />
+                <Route path="/survey/:quizId" component={SpecificSurveyPage} />
+                <Route path="/survey" component={QuizHistoryPage} />
+                <Route path="/analytics/:analysisId" component={SpecificAnalyticsPage} />
+                <Route path="/analytics" component={AnalyticsHistoryPage} />
                 <Route path="/export" component={ExportToPDFPage} />
-                <Route path="/analytics" component={AnalyticsPage} />
                 <Route path="/" component={HomePage} />
               </Switch>
             </Box>

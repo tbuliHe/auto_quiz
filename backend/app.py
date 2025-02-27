@@ -9,6 +9,7 @@ import config
 from quiz_service import generate_quiz, update_survey_json
 from file_service import extract_text_from_pdf
 from analysis_service import analyze_quiz_results
+from db_service import init_database, save_quiz, save_analysis, get_quiz_by_id, get_analysis_by_id, get_all_quizzes, get_all_analyses
 
 # 配置日志
 logging.basicConfig(
@@ -19,6 +20,7 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 CORS(app)
+init_database()  # 初始化数据库
 
 # 初始化配置
 config.init_configuration()
@@ -81,10 +83,15 @@ def create_quiz():
         quiz_json = generate_quiz(content, question_count, difficulty, 
                                   include_multiple_choice, include_fill_in_blank, notes)
         
-        # 更新前端文件
+        # 更新前端文件（保留原有功能，但不再是主要方式）
         update_survey_json(quiz_json)
         
-        return jsonify({"success": True})
+        # 保存到数据库
+        file_name = file.filename
+        title = f"{file_name} - {difficulty}难度 ({question_count}题)"
+        quiz_id = save_quiz(title, file_name, quiz_json, question_count, difficulty)
+        
+        return jsonify({"success": True, "quiz_id": quiz_id}), 200
     except Exception as e:
         logger.error(f"生成测验失败: {str(e)}")
         return jsonify({"error": str(e)}), 500
@@ -93,17 +100,78 @@ def create_quiz():
 @with_retry(max_retries=3, backoff_factor=0.5)
 def analyze_quiz():
     try:
-        # 获取用户答案
+        # 获取用户答案和测验ID
         data = request.json
         if not data or 'answers' not in data:
             return jsonify({"error": "没有提供答案"}), 400
-            
-        result = analyze_quiz_results(data['answers'])
+        
+        quiz_id = data.get('quiz_id')
+        
+        # 分析结果
+        if quiz_id:
+            # 从数据库获取测验
+            quiz = get_quiz_by_id(quiz_id)
+            if not quiz:
+                return jsonify({"error": "测验不存在"}), 404
+            result = analyze_quiz_results(data['answers'], quiz['quiz_json'])
+        else:
+            # 从本地文件分析（兼容旧版本）
+            result = analyze_quiz_results(data['answers'])
+        
+        # 保存分析结果到数据库
+        if quiz_id:
+            analysis_id = save_analysis(quiz_id, result)
+            result["analysis_id"] = analysis_id
+        
         return jsonify(result), 200
         
     except Exception as e:
         logger.error(f"测验分析错误: {str(e)}")
         return jsonify({"error": f"测验分析失败: {str(e)}"}), 500
+
+@app.route('/quizzes', methods=['GET'])
+def get_quizzes():
+    """获取所有测验"""
+    try:
+        quizzes = get_all_quizzes()
+        return jsonify(quizzes), 200
+    except Exception as e:
+        logger.error(f"获取测验列表失败: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/quizzes/<int:quiz_id>', methods=['GET'])
+def get_quiz(quiz_id):
+    """获取指定ID的测验"""
+    try:
+        quiz = get_quiz_by_id(quiz_id)
+        if quiz:
+            return jsonify(quiz), 200
+        return jsonify({"error": "测验不存在"}), 404
+    except Exception as e:
+        logger.error(f"获取测验失败: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/analyses', methods=['GET'])
+def get_analyses():
+    """获取所有分析结果"""
+    try:
+        analyses = get_all_analyses()
+        return jsonify(analyses), 200
+    except Exception as e:
+        logger.error(f"获取分析列表失败: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/analyses/<int:analysis_id>', methods=['GET'])
+def get_analysis(analysis_id):
+    """获取指定ID的分析结果"""
+    try:
+        analysis = get_analysis_by_id(analysis_id)
+        if analysis:
+            return jsonify(analysis), 200
+        return jsonify({"error": "分析结果不存在"}), 404
+    except Exception as e:
+        logger.error(f"获取分析结果失败: {str(e)}")
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(debug=True)
