@@ -118,55 +118,86 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
+            # 打印调试信息
+            echo "Starting deployment..."
+            echo "Current directory: $(pwd)"
+            
             # 创建应用目录
             mkdir -p /opt/auto_quiz
             cd /opt/auto_quiz
+            echo "Created and changed to directory: $(pwd)"
             
-            # 创建 docker-compose.yml 文件
-            cat > docker-compose.yml << 'EOL'
-            version: '3.8'
+            # 检查 Docker 是否安装
+            if ! command -v docker &> /dev/null; then
+              echo "Docker not found. Installing Docker..."
+              curl -fsSL https://get.docker.com -o get-docker.sh
+              sudo sh get-docker.sh
+              sudo usermod -aG docker $USER
+            fi
             
-            services:
-              backend:
-                image: ${{ secrets.DOCKER_USERNAME }}/auto-quiz-backend:latest
-                restart: unless-stopped
-                environment:
-                  - API_KEY=${{ secrets.API_KEY }}
-                  - API_URL=${{ secrets.API_URL }}
-                  - MODEL=${{ secrets.MODEL }}
-                  - ENVIRONMENT=production
-                volumes:
-                  - quiz_data:/data
-                networks:
-                  - auto_quiz_network
+            # 检查 Docker Compose 是否安装
+            if ! command -v docker-compose &> /dev/null; then
+              echo "Docker Compose not found. Installing Docker Compose..."
+              sudo curl -L "https://github.com/docker/compose/releases/download/v2.17.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+              sudo chmod +x /usr/local/bin/docker-compose
+              sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+            fi
             
-              frontend:
-                image: ${{ secrets.DOCKER_USERNAME }}/auto-quiz-frontend:latest
-                restart: unless-stopped
-                ports:
-                  - "80:80"
-                depends_on:
-                  - backend
-                networks:
-                  - auto_quiz_network
+            # 创建单独的变量来存储 Docker Hub 用户名
+            DOCKER_USERNAME="${{ secrets.DOCKER_USERNAME }}"
             
-            networks:
-              auto_quiz_network:
-                driver: bridge
+            # 创建 docker-compose.yml 文件 - 注意这里不使用 EOL 重定向，而是逐行写入文件
+            echo "Creating docker-compose.yml..."
+            rm -f docker-compose.yml
+            echo "version: '3'" > docker-compose.yml
+            echo "" >> docker-compose.yml
+            echo "services:" >> docker-compose.yml
+            echo "  backend:" >> docker-compose.yml
+            echo "    image: $DOCKER_USERNAME/auto-quiz-backend:latest" >> docker-compose.yml
+            echo "    restart: unless-stopped" >> docker-compose.yml
+            echo "    environment:" >> docker-compose.yml
+            echo "      - API_KEY=${{ secrets.API_KEY }}" >> docker-compose.yml
+            echo "      - API_URL=${{ secrets.API_URL }}" >> docker-compose.yml
+            echo "      - MODEL=${{ secrets.MODEL }}" >> docker-compose.yml
+            echo "      - ENVIRONMENT=production" >> docker-compose.yml
+            echo "    volumes:" >> docker-compose.yml
+            echo "      - quiz_data:/data" >> docker-compose.yml
+            echo "    networks:" >> docker-compose.yml
+            echo "      - auto_quiz_network" >> docker-compose.yml
+            echo "" >> docker-compose.yml
+            echo "  frontend:" >> docker-compose.yml
+            echo "    image: $DOCKER_USERNAME/auto-quiz-frontend:latest" >> docker-compose.yml
+            echo "    restart: unless-stopped" >> docker-compose.yml
+            echo "    ports:" >> docker-compose.yml
+            echo "      - \"80:80\"" >> docker-compose.yml
+            echo "    depends_on:" >> docker-compose.yml
+            echo "      - backend" >> docker-compose.yml
+            echo "    networks:" >> docker-compose.yml
+            echo "      - auto_quiz_network" >> docker-compose.yml
+            echo "" >> docker-compose.yml
+            echo "networks:" >> docker-compose.yml
+            echo "  auto_quiz_network:" >> docker-compose.yml
+            echo "" >> docker-compose.yml
+            echo "volumes:" >> docker-compose.yml
+            echo "  quiz_data:" >> docker-compose.yml
             
-            volumes:
-              quiz_data:
-            EOL
+            echo "Content of docker-compose.yml:"
+            cat docker-compose.yml
             
-            # 创建 .env 文件 (可选，如果需要额外的环境变量)
-            cat > .env << EOL
-            # 这里可以添加任何其他环境变量
-            EOL
+            # 尝试使用不同的 Docker Compose 命令
+            echo "Checking Docker Compose version:"
+            docker-compose --version || docker compose --version || echo "Docker Compose version command failed"
             
-            # 拉取并启动容器
-            docker-compose pull
-            docker-compose down --remove-orphans
-            docker-compose up -d
+            echo "Pulling latest images..."
+            docker-compose pull || docker compose pull || sudo docker-compose pull || sudo docker compose pull || echo "Failed to pull images"
             
-            # 显示容器状态
-            docker-compose ps
+            echo "Stopping any running containers..."
+            docker-compose down || docker compose down || sudo docker-compose down || sudo docker compose down || echo "Failed to stop containers (might be none running)"
+            
+            echo "Starting containers..."
+            docker-compose up -d || docker compose up -d || sudo docker-compose up -d || sudo docker compose up -d || echo "Failed to start containers"
+            
+            echo "Container status:"
+            docker-compose ps || docker compose ps || sudo docker-compose ps || sudo docker compose ps || echo "Failed to show container status"
+            
+            echo "Deployment script completed"
