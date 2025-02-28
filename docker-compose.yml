@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  frontend:
+    image: ${DOCKER_USERNAME}/auto-quiz-frontend:latest
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - auto_quiz_network
+
+  backend:
+    image: ${DOCKER_USERNAME}/auto-quiz-backend:latest
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - quiz_data:/data
+    networks:
+      - auto_quiz_network
+
+networks:
+  auto_quiz_network:
+
+volumes:
+  quiz_data:

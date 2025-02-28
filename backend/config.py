@@ -64,11 +64,12 @@ def init_configuration():
     except Exception as e:
         logger.error(f"初始化失败: {str(e)}", exc_info=True)
         raise
-
 def setup_proxy():
     """设置网络代理"""
-    os.environ['HTTPS_PROXY'] = 'http://127.0.0.1:7890'
-    os.environ['HTTP_PROXY'] = 'http://127.0.0.1:7890'
+    # 只在非生产环境使用代理
+    if os.getenv('ENVIRONMENT') != 'production':
+        os.environ['HTTPS_PROXY'] = 'http://127.0.0.1:7890'
+        os.environ['HTTP_PROXY'] = 'http://127.0.0.1:7890'
     
     # 配置 httpx 客户端超时
     timeout = httpx.Timeout(30.0, connect=20.0)
