@@ -82,6 +82,10 @@ jobs:
           }
           EOF
 
+      # 复制 Dockerfile.frontend 到前端目录内
+      - name: Copy Dockerfile to frontend directory
+        run: cp Dockerfile.frontend frontend/
+
       # 设置 Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -102,7 +106,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: ./frontend
-          file: ../Dockerfile.frontend
+          file: ./frontend/Dockerfile.frontend
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/auto-quiz-frontend:latest
 
@@ -112,7 +116,6 @@ jobs:
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /opt/auto_quiz
             docker-compose pull
