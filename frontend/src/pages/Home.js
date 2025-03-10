@@ -115,9 +115,9 @@ export function HomePage() {
 
   return (
     <Box sx={{ my: 4 }}>
-      <Typography variant="h4" component="h1" gutterBottom align="center" sx={{ mb: 4 }}>
+      {/* <Typography variant="h4" component="h1" gutterBottom align="center" sx={{ mb: 4 }}>
         知识测验生成器
-      </Typography>
+      </Typography> */}
 
       <Grid container justifyContent="center">
         <Grid item xs={12} sm={10} md={8} lg={6}>

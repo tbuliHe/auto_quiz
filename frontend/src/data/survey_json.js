@@ -7,55 +7,55 @@ export const json = {
         {
           "type": "radiogroup",
           "name": "question1",
-          "title": "以下哪种几何变换能够保持物体的“平直性”，即变换后平行的两条线依然平行？",
+          "title": "在汇编语言中，哪个伪指令用于定义段的开始和结束？",
           "isRequired": true,
           "choices": [
-            "刚体变换",
-            "相似变换",
-            "仿射变换",
-            "投影变换"
+            "DB 和 DW",
+            "SEGMENT 和 ENDS",
+            "ASSUME 和 END",
+            "ORG 和 EQU"
           ],
-          "correctAnswer": "仿射变换"
+          "correctAnswer": "SEGMENT 和 ENDS"
         },
         {
           "type": "text",
           "name": "question2",
-          "title": "在估计单应性变换矩阵的传统方法中，通常使用 ______ 算法来剔除错误匹配的特征点对。",
+          "title": "在汇编语言的 INT 21H 中，使用哪个功能号来结束程序？",
           "isRequired": true,
-          "correctAnswer": "RANSAC"
+          "correctAnswer": "4CH"
         },
         {
           "type": "radiogroup",
           "name": "question3",
-          "title": "图像滤波和图像形变的主要区别是什么？",
+          "title": "在汇编语言中，哪个伪指令用于定义字节类型的数据？",
           "isRequired": true,
           "choices": [
-            "图像滤波改变图像的空间坐标，图像形变改变图像的像素取值。",
-            "图像滤波和图像形变都改变图像的空间坐标。",
-            "图像滤波改变图像的像素取值，图像形变改变图像的空间坐标。",
-            "图像滤波和图像形变都改变图像的像素取值。"
+            "DW",
+            "DD",
+            "DB",
+            "EQU"
           ],
-          "correctAnswer": "图像滤波改变图像的像素取值，图像形变改变图像的空间坐标。"
+          "correctAnswer": "DB"
         },
         {
           "type": "text",
           "name": "question4",
-          "title": "使用相机从不同位置拍摄同一平面物体的图像之间存在 _________，可以用投影变换表示（假设无镜头畸变）。",
+          "title": "汇编语言中，哪个伪指令用于定义常量？",
           "isRequired": true,
-          "correctAnswer": "单应性"
+          "correctAnswer": "EQU"
         },
         {
           "type": "radiogroup",
           "name": "question5",
-          "title": "在几何形变的实现中，哪种变形方式可以避免产生空洞或波纹问题？",
+          "title": "执行 `MOV AH, 9` 后，再执行 `INT 21H` 通常会实现什么功能？",
           "isRequired": true,
           "choices": [
-            "正向变形",
-            "反向变形",
-            "两者都会产生",
-            "两者都不会产生"
+            "读取一个字符",
+            "显示一个字符",
+            "显示一个字符串",
+            "结束程序"
           ],
-          "correctAnswer": "反向变形"
+          "correctAnswer": "显示一个字符串"
         }
       ]
     }
