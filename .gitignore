@@ -6,3 +6,4 @@ docker-compose.yml
 Dockerfile.backend
 Dockerfile.frontend
 .github/
+backend/__pycache__/

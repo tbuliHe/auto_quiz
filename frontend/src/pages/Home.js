@@ -24,6 +24,7 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { styled } from '@mui/material/styles';
 import { useHistory } from "react-router-dom";
 import { generateQuiz } from "../services/api";
+import PdfPreview from '../components/PdfPreview';
 
 // 自定义文件上传按钮样式
 const VisuallyHiddenInput = styled('input')({
@@ -47,6 +48,9 @@ export function HomePage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [fileSelected, setFileSelected] = useState(false);
+  const [showPdfPreview, setShowPdfPreview] = useState(false);
+  const [selectedPages, setSelectedPages] = useState([]);
+  const [isPdf, setIsPdf] = useState(false);
   // 题目类型状态
   const [questionTypes, setQuestionTypes] = useState({
     multipleChoice: true,
@@ -55,9 +59,23 @@ export function HomePage() {
 
   const handleFileUpload = (event) => {
     if (event.target.files[0]) {
-      setFile(event.target.files[0]);
+      const selectedFile = event.target.files[0];
+      setFile(selectedFile);
       setFileSelected(true);
       setError(null);
+      
+      // 检查是否为PDF文件
+      const isPdfFile = selectedFile.type === 'application/pdf' || 
+                       selectedFile.name.toLowerCase().endsWith('.pdf');
+      setIsPdf(isPdfFile);
+      
+      // 如果是PDF文件，显示预览对话框
+      if (isPdfFile) {
+        setShowPdfPreview(true);
+      } else {
+        // 如果不是PDF，重置选定页面
+        setSelectedPages([]);
+      }
     }
   };
 
@@ -79,6 +97,22 @@ export function HomePage() {
     });
   };
 
+  // 处理页面选择完成
+  const handlePagesSelected = (pages) => {
+    setSelectedPages(pages);
+    setShowPdfPreview(false);
+  };
+
+  // 关闭PDF预览对话框
+  const handleClosePdfPreview = () => {
+    setShowPdfPreview(false);
+    // 如果用户取消了预览而没有选择页面，重置文件选择
+    if (selectedPages.length === 0) {
+      setFile(null);
+      setFileSelected(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -96,6 +130,11 @@ export function HomePage() {
     // 添加备注信息到表单数据
     if (notes.trim()) {
       formData.append("notes", notes);
+    }
+    
+    // 添加选定页面信息
+    if (isPdf && selectedPages.length > 0) {
+      formData.append("selectedPages", JSON.stringify(selectedPages));
     }
 
     try {
@@ -141,9 +180,23 @@ export function HomePage() {
                   <VisuallyHiddenInput type="file" accept=".pdf,.txt" onChange={handleFileUpload} />
                 </Button>
                 {fileSelected && (
-                  <Typography variant="body2" sx={{ mt: 1, color: 'success.main' }}>
-                    已选择文件: {file?.name}
-                  </Typography>
+                  <Box sx={{ mt: 1 }}>
+                    <Typography variant="body2" sx={{ color: 'success.main' }}>
+                      已选择文件: {file?.name}
+                    </Typography>
+                    {isPdf && selectedPages.length > 0 && (
+                      <Typography variant="body2" sx={{ color: 'info.main', mt: 0.5 }}>
+                        已选择 {selectedPages.length} 页
+                        <Button 
+                          size="small" 
+                          sx={{ ml: 1 }} 
+                          onClick={() => setShowPdfPreview(true)}
+                        >
+                          重新选择
+                        </Button>
+                      </Typography>
+                    )}
+                  </Box>
                 )}
               </Box>
 
@@ -271,6 +324,15 @@ export function HomePage() {
           </Box>
         </Grid>
       </Grid>
+      
+      {/* PDF预览对话框 */}
+      {showPdfPreview && file && (
+        <PdfPreview 
+          file={file} 
+          onPagesSelected={handlePagesSelected} 
+          onClose={handleClosePdfPreview} 
+        />
+      )}
     </Box>
   );
 }

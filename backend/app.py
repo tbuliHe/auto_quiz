@@ -4,10 +4,11 @@ import logging
 import os
 import time
 from functools import wraps
+import json
 
 import config
 from quiz_service import generate_quiz, update_survey_json
-from file_service import extract_text_from_pdf
+from file_service import extract_text_from_pdf,generate_pdf_previews
 from analysis_service import analyze_quiz_results
 from db_service import init_database, save_quiz, save_analysis, get_quiz_by_id, get_analysis_by_id, get_all_quizzes, get_all_analyses
 
@@ -47,6 +48,30 @@ def with_retry(max_retries=3, backoff_factor=0.5, errors=(Exception,)):
         return wrapper
     return decorator
 
+@app.route('/pdf-preview', methods=['POST'])
+def preview_pdf():
+    try:
+        # 获取上传的文件
+        if 'file' not in request.files:
+            return jsonify({"error": "未上传文件"}), 400
+        
+        file = request.files['file']
+        if file.filename == '' or not file.filename.lower().endswith('.pdf'):
+            return jsonify({"error": "未选择PDF文件"}), 400
+        
+        # 生成预览图
+        previews = generate_pdf_previews(file)
+        
+        # 返回预览数据
+        return jsonify({
+            "success": True, 
+            "previews": previews,
+            "totalPages": len(previews)
+        }), 200
+    except Exception as e:
+        logger.error(f"生成PDF预览失败: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
 @app.route('/generate-quiz', methods=['POST'])
 def create_quiz():
     try:
@@ -73,15 +98,23 @@ def create_quiz():
         # 获取备注信息（可选）
         notes = request.form.get('notes', '')
         
+        # 获取选定页面列表
+        selected_pages = request.form.get('selectedPages')
+        if selected_pages:
+            try:
+                selected_pages = json.loads(selected_pages)
+            except json.JSONDecodeError:
+                selected_pages = None
+        
         # 提取文本
         if file.filename.lower().endswith('.pdf'):
-            content = extract_text_from_pdf(file)
+            content = extract_text_from_pdf(file, selected_pages)
         else:
             content = file.read().decode('utf-8')
         
         # 生成测验题目
         quiz_json = generate_quiz(content, question_count, difficulty, 
-                                  include_multiple_choice, include_fill_in_blank, notes)
+                                 include_multiple_choice, include_fill_in_blank, notes)
         
         # 更新前端文件（保留原有功能，但不再是主要方式）
         update_survey_json(quiz_json)

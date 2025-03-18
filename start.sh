@@ -11,7 +11,7 @@ FRONTEND_PID=$!
 
 # 启动后端
 echo "启动后端..."
-gnome-terminal -- bash -c "cd $BACKEND_DIR && python app.py; exec bash" &
+gnome-terminal -- bash -c "cd $BACKEND_DIR && python3 app.py; exec bash" &
 BACKEND_PID=$!
 
 # 等待几秒钟以确保服务启动
