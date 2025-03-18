@@ -11,7 +11,8 @@ import {
   Select,
   MenuItem,
   Alert,
-  CircularProgress
+  CircularProgress,
+  Link
 } from '@mui/material';
 import { register } from '../services/authService';
 
@@ -81,7 +82,9 @@ export function RegisterPage() {
         identity: formData.identity
       });
       setLoading(false);
-      history.push('/login');
+      
+      // 使用state传递注册成功的消息
+      history.push('/login', { registerSuccess: true });
     } catch (error) {
       setLoading(false);
       setError(error.response?.data?.message || '注册失败，请稍后再试');
@@ -172,12 +175,13 @@ export function RegisterPage() {
           </Button>
           
           <Box sx={{ textAlign: 'center', mt: 2 }}>
-            <Button
-              variant="text"
-              onClick={() => history.push('/login')}
+            <Link
+              href="/login"
+              variant="body2"
+              underline="hover"
             >
               已有账号？立即登录
-            </Button>
+            </Link>
           </Box>
         </Box>
       </Paper>

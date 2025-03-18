@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 import {
   Box,
   Typography,
@@ -11,9 +11,10 @@ import {
   Select,
   MenuItem,
   Alert,
-  CircularProgress
+  CircularProgress,
+  Link
 } from '@mui/material';
-import { login } from '../services/authService';
+import { login, isAuthenticated } from '../services/authService';
 
 export function LoginPage() {
   const [formData, setFormData] = useState({
@@ -24,6 +25,20 @@ export function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const history = useHistory();
+  const location = useLocation();
+  
+  // 如果用户已登录，重定向到对应页面
+  useEffect(() => {
+    if (isAuthenticated()) {
+      const userStr = localStorage.getItem('user');
+      const user = JSON.parse(userStr);
+      if (user.user_type === 'teacher') {
+        history.push('/teacher/dashboard');
+      } else {
+        history.push('/student/dashboard');
+      }
+    }
+  }, [history]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -40,21 +55,24 @@ export function LoginPage() {
 
     try {
       const response = await login(formData);
-      localStorage.setItem('user', JSON.stringify(response.user));
-      localStorage.setItem('token', response.token);
+      console.log("Login success:", response);
       setLoading(false);
       
       // 根据用户类型重定向到不同页面
       if (formData.userType === 'teacher') {
-        history.push('/admin/dashboard');
+        history.push('/teacher/dashboard');
       } else {
-        history.push('/dashboard');
+        history.push('/student/dashboard');
       }
     } catch (error) {
       setLoading(false);
+      console.error("Login error details:", error);
       setError(error.response?.data?.message || '登录失败，请检查用户名和密码');
     }
   };
+
+  // 检查是否有注册成功的消息
+  const registerSuccess = location.state?.registerSuccess;
 
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
@@ -62,6 +80,12 @@ export function LoginPage() {
         <Typography variant="h5" component="h1" align="center" gutterBottom>
           用户登录
         </Typography>
+        
+        {registerSuccess && (
+          <Alert severity="success" sx={{ mb: 2 }}>
+            注册成功！请使用新账号登录
+          </Alert>
+        )}
         
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 3 }}>
           <TextField
@@ -122,12 +146,13 @@ export function LoginPage() {
           </Button>
           
           <Box sx={{ textAlign: 'center', mt: 2 }}>
-            <Button
-              variant="text"
-              onClick={() => history.push('/register')}
+            <Link
+              href="/register"
+              variant="body2"
+              underline="hover"
             >
               没有账号？立即注册
-            </Button>
+            </Link>
           </Box>
         </Box>
       </Paper>
